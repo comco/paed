@@ -7,6 +7,7 @@
 import std.stdio;
 import std.string;
 import std.array;
+import std.range;
 
 const int max_i = 256;
 
@@ -25,7 +26,7 @@ class Edge {
 }
 
 class Node {
-    static int counter = 0;
+    static int nodes = 0;
 
     Edge[max_i] edges;
     Node link;
@@ -33,7 +34,7 @@ class Node {
 
     this(Node link = null) {
         this.link = link;
-        this.id = counter++;
+        this.id = nodes++;
     }
 
     Edge opIndex(char c) {
@@ -45,7 +46,7 @@ class Node {
         //edges[e.label[0] - 'a'] = e;
         edges[e.label[0]] = e;
     }
-}    
+}
 
 class UkkonenSuffixTree {
     Node nil, root, activeNode;
@@ -123,7 +124,7 @@ class UkkonenSuffixTree {
         if (activeLength == 0) {
             next = activeNode;
         } else {
-            next = new Node(nil);
+            next = new Node;
         }        
         next.add(new Edge(label, null));
         if (next != activeNode) {
@@ -170,6 +171,9 @@ class UkkonenSuffixTree {
                 follow();
                 prev = next;
             }
+            if (prev && activeLength == 0) {
+                prev.link = activeNode;
+            }
             advance(c);
         }
     }
@@ -178,7 +182,7 @@ class UkkonenSuffixTree {
 void main() {
     writeln("/*");
     auto t = new UkkonenSuffixTree();
-    t.addSuffixes("umbabarumba$");
+    t.addSuffixes("abcbabanana$");
     writeln("*/");
     writeln("digraph g {");
     writeln("rankdir=LR;");
